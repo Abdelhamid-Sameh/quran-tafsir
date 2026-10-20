@@ -58,17 +58,17 @@ button{font:inherit;color:inherit}
 .shead{text-align:center;padding-block:20px 8px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .shead h1{margin:0;font:700 clamp(44px,8vw,64px)/1.2 var(--f-kufi);color:var(--malachite)}
 .shead .tr{font-size:20px}
-.meta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font:13px var(--f-mono);color:var(--muted)}
-.chip{font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:999px;border:1px solid currentColor}
+.meta{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 16px;font:16px/1.6 var(--f-naskh);color:var(--muted);direction:rtl}
+.chip{font:700 15px/1 var(--f-naskh);padding:5px 12px 7px;border-radius:999px;border:1px solid currentColor}
 .chip.meccan{color:var(--malachite)}.chip.medinan{color:var(--medinan)}
-.basmala{font:var(--ar-size)/2 var(--f-quran);direction:rtl;margin:14px 0 4px}
+.basmala{font:var(--ar-size)/2.6 var(--f-quran);direction:rtl;margin:14px 0 4px}
 .intro-btn{margin-top:6px}
 .ayah{padding:18px 14px 14px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;gap:10px;scroll-margin-top:80px;border:1px solid transparent}
 .ayah+.ayah{margin-top:2px}
 .ayah:hover{background:var(--leaf)}
 .ayah.inrange{background:var(--hi)}
 .ayah[aria-current="true"]{background:var(--leaf);border-color:var(--gold)}
-.ar{font:var(--ar-size)/2.15 var(--f-quran);direction:rtl;text-align:right;margin:0}
+.ar{font:var(--ar-size)/2.6 var(--f-quran);direction:rtl;text-align:right;margin:0;padding-block:.15em}
 .end{display:inline-flex;align-items:center;justify-content:center;font:600 .62em/1 var(--f-naskh);color:var(--gold);margin-inline:.25em;min-width:1.7em;height:1.7em;border:1.5px solid var(--gold);border-radius:50%;vertical-align:.12em}
 .en{margin:0;font-size:16.5px;color:var(--muted);direction:ltr}
 .en .n{font:500 12px var(--f-mono);color:var(--gold);margin-right:6px}
@@ -208,7 +208,7 @@ const fold = s => s.toLowerCase().replace(/[-'ʿʾ\s]/g, '');
 function renderList(filter = '') {
   const f = fold(filter), raw = filter.trim();
   $('#slist').innerHTML = S.idx.filter(([n, ar, tr]) => !f || String(n) === raw || fold(tr).includes(f) || ar.includes(raw))
-    .map(([n, ar, tr, type, , nv]) => `<li><button data-n="${n}" ${n === S.n ? 'aria-current="true"' : ''}><span class="num">${n}</span><span class="nm"><span>${tr}</span><small>${type === 'meccan' ? 'Meccan' : 'Medinan'} · ${nv} verses</small></span><span class="ara" lang="ar">${ar}</span></button></li>`).join('')
+    .map(([n, ar, tr, type, , nv]) => `<li><button data-n="${n}" ${n === S.n ? 'aria-current="true"' : ''}><span class="num">${n}</span><span class="nm"><span>${tr}</span><small lang="ar" dir="rtl" style="font:14px var(--f-naskh)">${type === 'meccan' ? 'مكية' : 'مدنية'} · عدد الآيات: ${AR(nv)}</small></span><span class="ara" lang="ar">${ar}</span></button></li>`).join('')
     || '<li class="p-empty">No surah matches.</li>';
 }
 function openList(on) {
@@ -262,10 +262,10 @@ function renderSurah() {
     return `<article class="ayah" id="v${v}" data-v="${v}">
       <p class="ar" lang="ar">${a}<span class="end" aria-label="verse ${v}">${AR(v)}</span></p>
       <p class="en" lang="en"><span class="n">${S.n}:${v}</span>${esc(e)}</p>${jal}
-      <div class="ayah-foot"><span class="ref">${tr} ${S.n}:${v}</span><button class="explain" data-v="${v}">Explain ${S.n}:${v}</button></div></article>`;
+      <div class="ayah-foot"><span class="ref">${tr} ${S.n}:${v}</span><button class="explain" data-v="${v}" aria-label="Explain verse ${S.n}:${v}">Explain</button></div></article>`;
   }).join('');
   $('#reader').innerHTML = `<div class="shead"><h1 lang="ar">${ar}</h1><div class="tr">${n}. ${tr}</div>
-    <div class="meta"><span class="chip ${type}">${type === 'meccan' ? 'Meccan' : 'Medinan'}</span><span>${nv} verses</span><span>${ordinal(ord)} of 114 in revelation order</span></div>
+    <div class="meta" lang="ar"><span class="chip ${type}">${type === 'meccan' ? 'مكية' : 'مدنية'}</span><span>عدد الآيات: ${AR(nv)}</span><span>ترتيب النزول: ${AR(ord)} من ١١٤</span></div>
     ${n !== 1 && n !== 9 ? '<div class="basmala" lang="ar">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>' : ''}
     <button class="pill intro-btn" id="introBtn">About this surah · Ibn Kathīr</button></div>
     ${verses}
