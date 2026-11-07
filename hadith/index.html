@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>مُشكِل الصحيح</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Layout: a study desk — one reading column of case files, each opening like a dossier; the library is a two-pane shelf (books | narrations). */
+:root{
+  --paper:#F1F2F4; --leaf:#FBFBFC; --ink:#1A2130; --muted:#5B6474; --rule:#D3D7DE; --hi:#E7EAF0;
+  --lapis:#2C4A86; --ochre:#9A6614; --on-accent:#FBFBFC; --shade:rgba(15,20,35,.18);
+  --cA:#5B6E8C; --cB:#2F7D5B; --cC:#7A4FA0; --cD:#B07A14; --cE:#B4492E;
+  --f-head:"El Messiri","Noto Kufi Arabic",sans-serif;
+  --f-ui:"IBM Plex Sans Arabic","Noto Sans Arabic",system-ui,sans-serif;
+  --f-text:"Amiri","Noto Naskh Arabic",serif;
+  --f-quran:"Scheherazade New","Amiri","Noto Naskh Arabic",serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11151D; --leaf:#181E28; --ink:#E6E9EF; --muted:#9AA3B2; --rule:#2B3442; --hi:#1F2733;
+  --lapis:#86A6E6; --ochre:#E0A84A; --on-accent:#11151D; --shade:rgba(0,0,0,.5);
+  --cA:#9AACCA; --cB:#5CC394; --cC:#B992DE; --cD:#E3B04F; --cE:#E87F63; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11151D; --leaf:#181E28; --ink:#E6E9EF; --muted:#9AA3B2; --rule:#2B3442; --hi:#1F2733;
+  --lapis:#86A6E6; --ochre:#E0A84A; --on-accent:#11151D; --shade:rgba(0,0,0,.5);
+  --cA:#9AACCA; --cB:#5CC394; --cC:#B992DE; --cD:#E3B04F; --cE:#E87F63; color-scheme:dark}
+*{box-sizing:border-box}
+html{direction:rtl}
+body{background:var(--paper);color:var(--ink);font:16px/1.85 var(--f-ui);margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 80px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+button,input,select{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-head);font-weight:700;line-height:1.35;margin:0;text-wrap:balance}
+p{margin:0}
+a{color:var(--lapis)}
+.wrap{max-width:900px;margin:0 auto}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+header.top{padding-block:40px 18px;display:flex;flex-direction:column;gap:12px}
+header.top h1{font-size:clamp(36px,7vw,58px);color:var(--lapis)}
+header.top .lede{font-size:18px;max-width:64ch}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);display:flex;gap:4px;border-bottom:1px solid var(--rule);padding-top:6px;margin-bottom:24px}
+nav.tabs button{all:unset;cursor:pointer;padding:10px 16px;font:600 15px var(--f-ui);color:var(--muted);border-bottom:3px solid transparent}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ochre)}
+nav.tabs button:focus-visible{outline:2px solid var(--ochre)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.dist{display:flex;height:44px;border-radius:8px;overflow:hidden;border:1px solid var(--rule)}
+.dist button{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--on-accent);font:700 15px var(--f-ui);min-width:28px}
+.dist button[aria-pressed="false"]{opacity:.35}
+.dist button:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:8px 18px}
+.legend div{display:flex;gap:10px;align-items:baseline;font-size:14px}
+.legend i{flex:none;width:12px;height:12px;border-radius:3px;transform:translateY(1px)}
+.legend b{font-weight:600}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{all:unset;cursor:pointer;padding:5px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--leaf);font-size:14px}
+.chip[aria-pressed="true"]{background:var(--lapis);border-color:var(--lapis);color:var(--on-accent)}
+.chip:focus-visible{outline:2px solid var(--ochre)}
+.search{flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--rule);background:var(--leaf);font-size:15px}
+.count{font-size:14px;color:var(--muted)}
+.cases{display:flex;flex-direction:column;gap:10px}
+details.case{background:var(--leaf);border:1px solid var(--rule);border-radius:12px;scroll-margin-top:70px}
+details.case[open]{box-shadow:0 6px 22px var(--shade)}
+details.case>summary{list-style:none;cursor:pointer;padding:14px 16px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start}
+details.case>summary::-webkit-details-marker{display:none}
+details.case>summary:focus-visible{outline:2px solid var(--ochre);border-radius:12px}
+.badge{grid-row:span 2;align-self:center;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:var(--on-accent);font:700 16px var(--f-ui)}
+.case h3{font-size:19px}
+.meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
+.body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:18px;border-top:1px solid var(--rule)}
+.lab{font:600 12px var(--f-ui);color:var(--ochre);margin-bottom:4px}
+.claim{background:var(--hi);border-radius:8px;padding:10px 12px}
+.quote{font:21px/2 var(--f-text);border-inline-start:3px solid var(--lapis);padding-inline-start:14px}
+.refs{display:flex;flex-wrap:wrap;gap:6px}
+.ref{all:unset;cursor:pointer;font-size:13px;padding:3px 10px;border-radius:6px;border:1px solid var(--rule);color:var(--lapis)}
+.ref:hover{border-color:var(--lapis)}
+.ref:focus-visible{outline:2px solid var(--ochre)}
+.ayah{font:22px/2.3 var(--f-quran);padding:4px 0}
+.ayah small{font:13px var(--f-ui);color:var(--muted);margin-inline-start:8px}
+.readings{display:flex;flex-direction:column;gap:10px}
+.reading{border:1px solid var(--rule);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.reading .who{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.reading .who b{font-weight:600}
+.reading .src{font-size:13px;color:var(--muted)}
+.st{font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid currentColor}
+.st.kept{color:var(--cB)}.st.aside{color:var(--cE)}
+.reading.aside{background:var(--hi)}
+.why{font-size:14px;color:var(--muted)}
+.why b{color:var(--cE);font-weight:600}
+.mine{border:2px solid var(--lapis);border-radius:12px;padding:12px 14px;background:var(--paper)}
+.mine .lab{color:var(--lapis)}
+.cls-line{display:flex;gap:10px;align-items:baseline;font-size:14px}
+.cls-line i{flex:none;width:12px;height:12px;border-radius:3px}
+.empty{color:var(--muted);text-align:center;padding:30px 0}
+.lib-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.lib-top select{padding:8px 10px;border-radius:10px;border:1px solid var(--rule);background:var(--leaf);max-width:100%}
+.lib{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:16px}
+@media (min-width:900px){.lib{grid-template-columns:260px minmax(0,1fr)}}
+.books{background:var(--leaf);border:1px solid var(--rule);border-radius:12px;max-height:70vh;overflow-y:auto;padding:6px;position:sticky;top:64px}
+@media (max-width:899px){.books{display:none}}
+.books button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;justify-content:space-between;gap:8px;width:100%;padding:7px 10px;border-radius:8px;font-size:14px}
+.books button:hover,.books button[aria-current="true"]{background:var(--hi)}
+.books button[aria-current="true"]{box-shadow:inset -3px 0 var(--ochre)}
+.books button:focus-visible{outline:2px solid var(--ochre)}
+.books small{color:var(--muted)}
+.mob-books{display:none}
+@media (max-width:899px){.mob-books{display:block;width:100%}}
+.hlist{display:flex;flex-direction:column;gap:8px;min-width:0}
+.h{background:var(--leaf);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;scroll-margin-top:70px}
+.h.target{border-color:var(--ochre);box-shadow:0 0 0 2px var(--ochre)}
+.h .hn{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;font-size:13px;color:var(--muted);margin-bottom:4px}
+.h .ht{font:19px/2 var(--f-text);overflow-wrap:anywhere}
+.h mark{background:color-mix(in srgb,var(--ochre) 30%,transparent);color:inherit;border-radius:3px}
+.grade{font-size:12px;font-weight:600;color:var(--cB)}
+.studied{font-size:12px;font-weight:600;color:var(--lapis);cursor:pointer;text-decoration:underline}
+.progress{font-size:14px;color:var(--muted)}
+.method h2{font-size:24px;margin-top:8px}
+.method p,.method li{max-width:68ch}
+.method dl{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0}
+.method dt{display:flex;align-items:center;gap:8px;font-weight:600}
+.method dt i{width:12px;height:12px;border-radius:3px}
+.method dd{margin:0}
+@media (max-width:560px){.method dl{grid-template-columns:1fr}.method dd{margin-bottom:8px}}
+.note{font-size:14px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="shell">
+<header class="top">
+  <h1>مُشكِل الصحيح</h1>
+  <p class="lede">دراسة لواحد وستين حديثًا صحيحًا يستشهد بها المعترضون على السنة: لكل حديث نصُّه من مصدره، وسياقه، والآيات المتصلة به، وأقوال العلماء فيه، وما استُبعد منها ولماذا، ثم شرح مبسّط من إعدادي. ومعها مكتبة كاملة بنصوص الصحيحين وما صحّ من السنن الأربعة.</p>
+</header>
+<nav class="tabs" role="tablist">
+  <button role="tab" id="tab-study" aria-selected="true" aria-controls="v-study">الدراسة</button>
+  <button role="tab" id="tab-lib" aria-selected="false" aria-controls="v-lib">المكتبة</button>
+  <button role="tab" id="tab-method" aria-selected="false" aria-controls="v-method">المنهج</button>
+</nav>
+
+<section id="v-study" role="tabpanel" class="stack">
+  <div class="stack" style="gap:10px">
+    <h2 style="font-size:22px">إلى أين تنتهي الإشكالات؟</h2>
+    <div class="dist" id="dist" aria-label="توزيع الأحاديث على أنواع الإشكال"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="filters" id="cats"></div>
+  <div class="filters"><input class="search" id="q" type="search" placeholder="ابحث في العناوين والنصوص والشروح" aria-label="بحث في الدراسة"><span class="count" id="count"></span></div>
+  <div class="cases" id="cases"><p class="empty">جارٍ تحميل الدراسة…</p></div>
+</section>
+
+<section id="v-lib" role="tabpanel" hidden>
+  <div class="lib-top">
+    <select id="col" aria-label="اختر الكتاب"></select>
+    <select id="mbook" class="mob-books" aria-label="اختر الباب"></select>
+    <input class="search" id="lq" type="search" placeholder="ابحث في هذا الكتاب كله، أو اكتب رقم الحديث" aria-label="بحث في المكتبة">
+  </div>
+  <p class="note" id="colnote" style="margin-top:8px"></p>
+  <div class="lib">
+    <div class="books" id="books" aria-label="كتب المصنَّف"></div>
+    <div class="hlist" id="hlist"></div>
+  </div>
+</section>
+
+<section id="v-method" role="tabpanel" class="stack method" hidden>
+  <h2>كيف أُعدّت هذه الدراسة</h2>
+  <p>اختيرت الأحاديث لأنها أكثر ما يستشهد به المعترضون على السنة، لا لأنها تمثل السنة. فهي واحد وستون حديثًا من نحو ثمانية وعشرين ألف رواية في المكتبة، وأكثر السنة في العبادات والأخلاق والمعاملات التي لا يدّعي فيها أحد تعارضًا.</p>
+  <h2>أنواع الإشكال</h2>
+  <dl id="clsdefs"></dl>
+  <h2>المصادر</h2>
+  <ul>
+    <li>نصوص الأحاديث: صحيح البخاري كاملًا، وصحيح مسلم كاملًا، وما حكم عليه الألباني بالصحة (صحيح، حسن صحيح) من سنن أبي داود والترمذي والنسائي وابن ماجه. حكم الألباني اجتهاد عالم واحد، ولغيره أحكام قد تخالفه.</li>
+    <li>الترقيم: ترقيم البخاري المعروف، وترقيم محمد فؤاد عبد الباقي لصحيح مسلم، وتشترك روايات مسلم المتعددة للحديث الواحد في رقمه. وعناوين الكتب بالعربية كما في موقع sunnah.com.</li>
+    <li>كل نص منقول في الدراسة فُحص آليًا للتأكد من وروده في الرواية المحال إليها، وكل آية منقولة من نص المصحف برواية حفص.</li>
+    <li>في النسخة الرقمية المصدر تلف في حرف واحد من نحو ستين رواية، فاستُعيد الحرف من نسخة رقمية ثانية بمطابقة ما قبله وما بعده، وبقيت أربعة مواضع لم تُستعد فوُضعت مكانها علامة «…» بدل حذف صامت.</li>
+    <li>الإحالة إلى الشروح برقم الحديث المشروح، لا برقم الصفحة، لأن الطبعات تختلف. والأقوال المنسوبة إلى العلماء ملخّصة بعبارتي إلا ما وُضع بين علامتي تنصيص.</li>
+  </ul>
+  <h2>حدود هذا العمل</h2>
+  <p>فقرة «شرحي» في كل حديث من إعداد Claude، وهو نموذج ذكاء اصطناعي من شركة Anthropic، وليست فتوى ولا قول عالم. وُضعت بعد مراجعة أقوال العلماء، واستُبعد منها ما يخالف ظاهر القرآن، لكنها اجتهاد قابل للخطأ. وحيث وجدتُ الإشكال قائمًا قلتُ ذلك صراحة بدل تكلّف الجواب.</p>
+</section>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const store = { get(k, d) { try { const v = localStorage.getItem('mq:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem('mq:' + k, JSON.stringify(v)); } catch {} } };
+const CLS = {
+  A: ['اقتطاع أو سوء فهم', 'الاعتراض يقوم على جملة مقتطعة من سياقها، أو على نص ليس من كلام النبي ﷺ أصلًا.'],
+  B: ['تعارض ظاهري يزول', 'يبدو التعارض في القراءة الأولى، ويزول بالسياق أو بجمع العلماء المعتبر بين النصوص.'],
+  C: ['نقده المحدّثون أنفسهم', 'اللفظ المستشكل انتقده صحابي أو إمام من أئمة الحديث قبل المعترضين بقرون، في سنده أو متنه.'],
+  D: ['حكم مرتبط بسياقه', 'حكم تشريعي أو واقعة تاريخية مرتبطة بظرف زمانها، والعلماء مختلفون في تطبيقها، والمسألة أخلاقية أو فقهية لا تناقض نصّي.'],
+  E: ['إشكال لم يُحسم', 'لم أجد له جوابًا مقنعًا تمامًا، وأقول ذلك صراحة كما قاله بعض العلماء قبلي.'],
+};
+const LETTER = { A: 'أ', B: 'ب', C: 'ج', D: 'د', E: 'هـ' };
+const COLS = { bukhari: 'صحيح البخاري', muslim: 'صحيح مسلم', abudawud: 'سنن أبي داود', tirmidhi: 'جامع الترمذي', nasai: 'سنن النسائي', ibnmajah: 'سنن ابن ماجه' };
+const cache = new Map();
+const getJSON = p => { if (!cache.has(p)) { const r = fetch(p).then(x => { if (!x.ok) throw new Error(x.status); return x.json(); }); cache.set(p, r); r.catch(() => cache.delete(p)); } return cache.get(p); };
+const DIA = /[\u064B-\u0652\u0670\u0640\u06D6-\u06ED]/g;
+const norm = t => t.replace(DIA, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي');
+
+// tabs + deep links
+const views = { study: $('#v-study'), lib: $('#v-lib'), method: $('#v-method') };
+function show(v) {
+  for (const k in views) { views[k].hidden = k !== v; $('#tab-' + k).setAttribute('aria-selected', k === v); $('#tab-' + k).tabIndex = k === v ? 0 : -1; }
+  store.set('tab', v);
+  if (v === 'lib') initLib();
+}
+for (const k in views) $('#tab-' + k).onclick = () => { show(k); try { history.replaceState(null, '', '#' + k); } catch {} };
+$('nav.tabs').onkeydown = e => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  const ks = Object.keys(views), i = ks.findIndex(k => !views[k].hidden), d = e.key === 'ArrowLeft' ? 1 : -1;
+  const n = ks[(i + d + ks.length) % ks.length]; show(n); $('#tab-' + n).focus();
+};
+
+// study
+let S = [], fCls = new Set('ABCDE'), fCat = 'الكل', fQ = '';
+function renderDist() {
+  const c = {}; S.forEach(e => c[e.cls] = (c[e.cls] || 0) + 1);
+  $('#dist').innerHTML = Object.keys(CLS).filter(k => c[k]).map(k => `<button data-k="${k}" aria-pressed="${fCls.has(k)}" style="flex:${c[k]};background:var(--c${k})" title="${CLS[k][0]}: ${AR(c[k])}" aria-label="${CLS[k][0]}، ${AR(c[k])} حديثًا">${AR(c[k])}</button>`).join('');
+  $('#legend').innerHTML = Object.keys(CLS).map(k => `<div><i style="background:var(--c${k})"></i><span><b>${LETTER[k]}. ${CLS[k][0]}</b> <span class="muted num">(${AR(c[k] || 0)})</span></span></div>`).join('');
+}
+$('#dist').onclick = e => {
+  const b = e.target.closest('[data-k]'); if (!b) return;
+  const k = b.dataset.k;
+  if (fCls.size === 5) fCls = new Set([k]); else if (fCls.has(k)) { fCls.delete(k); if (!fCls.size) fCls = new Set('ABCDE'); } else fCls.add(k);
+  renderDist(); renderCases();
+};
+function renderCats() {
+  const cats = ['الكل', ...new Set(S.map(e => e.cat))];
+  $('#cats').innerHTML = cats.map(c => `<button class="chip" aria-pressed="${c === fCat}" data-c="${c}">${c}${c === 'الكل' ? '' : ` <span class="num">${AR(S.filter(e => e.cat === c).length)}</span>`}</button>`).join('');
+}
+$('#cats').onclick = e => { const b = e.target.closest('[data-c]'); if (b) { fCat = b.dataset.c; renderCats(); renderCases(); } };
+let qt; $('#q').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { fQ = norm(e.target.value.trim()); renderCases(); }, 150); };
+const refLabel = ([c, n]) => `${COLS[c]} ${AR(n)}`;
+function caseHTML(e) {
+  const reads = e.readings.map(r => `<div class="reading ${r.st}"><div class="who"><b>${esc(r.who)}</b><span class="st ${r.st}">${r.st === 'kept' ? 'قول معتبر' : 'مُستبعَد'}</span></div>
+    <p>${esc(r.say)}</p>${r.src && r.src !== '—' ? `<p class="src">المصدر: ${esc(r.src)}</p>` : ''}${r.st === 'aside' ? `<p class="why"><b>سبب الاستبعاد:</b> ${esc(r.why)}</p>` : ''}</div>`).join('');
+  return `<details class="case" id="s-${e.id}">
+    <summary><span class="badge" style="background:var(--c${e.cls})" aria-label="${CLS[e.cls][0]}">${LETTER[e.cls]}</span>
+      <h3>${esc(e.title)}</h3><span class="meta"><span>${esc(e.cat)}</span><span>${e.refs.map(refLabel).join(' · ')}</span></span></summary>
+    <div class="body">
+      <div><div class="lab">الاعتراض</div><p class="claim">${esc(e.claim)}</p></div>
+      <div><div class="lab">نص الحديث (مقتطف)</div><p class="quote">«${esc(e.quote[2])}»</p>
+        <div class="refs" style="margin-top:8px">${e.refs.map(([c, n]) => `<button class="ref" data-open="${c}-${n}">اقرأ الرواية كاملة: ${refLabel([c, n])}</button>`).join('')}</div></div>
+      <div><div class="lab">السياق</div><p>${esc(e.context)}</p></div>
+      ${e.ayat.length ? `<div><div class="lab">آيات متصلة</div>${e.ayat.map(([r, s, t]) => `<p class="ayah">${esc(t)}<small>${esc(s)} ${AR(r)}</small></p>`).join('')}</div>` : ''}
+      <div><div class="lab">أقوال العلماء</div><div class="readings">${reads}</div></div>
+      <div class="mine"><div class="lab">شرحي (Claude): اجتهاد لا فتوى</div><p>${esc(e.mine)}</p></div>
+      <div class="cls-line"><i style="background:var(--c${e.cls})"></i><span><b>التصنيف:</b> ${CLS[e.cls][0]}. <span class="muted">${CLS[e.cls][1]}</span></span></div>
+    </div></details>`;
+}
+function renderCases() {
+  const hay = e => norm([e.title, e.claim, e.context, e.mine, e.quote[2], e.readings.map(r => r.who + ' ' + r.say).join(' ')].join(' '));
+  const list = S.filter(e => fCls.has(e.cls) && (fCat === 'الكل' || e.cat === fCat) && (!fQ || hay(e).includes(fQ)));
+  $('#count').textContent = `${AR(list.length)} من ${AR(S.length)}`;
+  $('#cases').innerHTML = list.length ? list.map(caseHTML).join('') : '<p class="empty">لا توجد أحاديث تطابق هذا الاختيار.</p>';
+}
+$('#cases').addEventListener('click', e => { const b = e.target.closest('[data-open]'); if (b) { const [c, n] = b.dataset.open.split('-'); openHadith(c, +n); } });
+
+// library
+let IX = null, cur = { col: null, book: null }, libReady = null;
+const studied = new Map();
+function initLib() {
+  if (!libReady) libReady = (async () => {
+    try { IX = await getJSON('data/texts/index.json'); }
+    catch { $('#hlist').innerHTML = '<p class="empty">لم تُحمَّل المكتبة. تحقق من الاتصال ثم أعد فتح التبويب.</p>'; libReady = null; return; }
+    S.forEach(e => e.refs.forEach(([c, n]) => studied.set(c + '-' + n, e.id)));
+    $('#col').innerHTML = IX.map(c => `<option value="${c.id}">${c.ar} (${AR(c.books.reduce((a, b) => a + b[2], 0))} رواية)</option>`).join('');
+  })();
+  return libReady.then(() => { if (IX && !cur.col) { const last = store.get('lib', null); return openBook(last?.[0] || 'bukhari', last?.[1]); } });
+}
+const colOf = id => IX.find(c => c.id === id);
+async function openBook(col, book, target) {
+  const C = colOf(col); if (!C) return;
+  if (book == null || !C.books.some(b => b[0] === book)) book = C.books[0][0];
+  const colChanged = cur.col !== col; cur = { col, book };
+  store.set('lib', [col, book]);
+  $('#col').value = col;
+  $('#colnote').textContent = C.rule === 'all' ? `جميع روايات ${C.ar}.` : `الروايات التي حكم عليها الألباني بالصحة فقط من ${C.ar}.`;
+  if (colChanged) {
+    $('#books').innerHTML = C.books.map(([b, t, n]) => `<button data-b="${b}"><span>${esc(t)}</span><small class="num">${AR(n)}</small></button>`).join('');
+    $('#mbook').innerHTML = C.books.map(([b, t, n]) => `<option value="${b}">${esc(t)} (${AR(n)})</option>`).join('');
+  }
+  $('#books').querySelectorAll('button').forEach(x => x.setAttribute('aria-current', +x.dataset.b === book));
+  $('#mbook').value = book;
+  $('#hlist').innerHTML = '<p class="empty">جارٍ التحميل…</p>';
+  let rows; try { rows = await getJSON(`data/texts/${col}/${book}.json`); } catch { $('#hlist').innerHTML = '<p class="empty">لم يُحمَّل هذا الباب. حاول مرة أخرى.</p>'; return; }
+  if (cur.col !== col || cur.book !== book) return;
+  const title = C.books.find(b => b[0] === book)[1];
+  $('#hlist').innerHTML = `<h2 style="font-size:20px">${esc(title)}</h2>` + rows.map(r => hRow(col, r)).join('');
+  $('#books [aria-current="true"]')?.scrollIntoView({ block: 'nearest' });
+  if (target) { const el = document.getElementById(`h-${col}-${target}`); if (el) { el.classList.add('target'); el.scrollIntoView({ block: 'start' }); } }
+}
+function hRow(col, [n, t, g], q) {
+  const sid = studied.get(col + '-' + n);
+  return `<article class="h" id="h-${col}-${n}"><div class="hn"><span class="num">${COLS[col]} · رقم ${AR(n)}</span><span>${g ? `<span class="grade">${g} (الألباني)</span>` : ''}${sid ? ` <span class="studied" data-sid="${sid}" role="link" tabindex="0">مدروس في المشكل</span>` : ''}</span></div><p class="ht">${q ? highlight(t, q) : esc(t)}</p></article>`;
+}
+function highlight(t, q) {  // match on normalized text, mark on the original
+  const map = [], plain = [];
+  for (let i = 0; i < t.length; i++) { const n = norm(t[i]); for (const c of n) { plain.push(c); map.push(i); } }
+  const at = plain.join('').indexOf(q); if (at < 0) return esc(t);
+  const s = map[at], e = map[at + q.length - 1] + 1;
+  const start = Math.max(0, s - 160), end = Math.min(t.length, e + 220);
+  return (start ? '… ' : '') + esc(t.slice(start, s)) + '<mark>' + esc(t.slice(s, e)) + '</mark>' + esc(t.slice(e, end)) + (end < t.length ? ' …' : '');
+}
+$('#col').onchange = e => { $('#lq').value = ''; openBook(e.target.value); };
+$('#mbook').onchange = e => openBook(cur.col, +e.target.value);
+$('#books').onclick = e => { const b = e.target.closest('[data-b]'); if (b) { $('#lq').value = ''; openBook(cur.col, +b.dataset.b); } };
+$('#hlist').addEventListener('click', e => { const s = e.target.closest('[data-sid]'); if (s) openCase(s.dataset.sid); });
+$('#hlist').addEventListener('keydown', e => { const s = e.target.closest('[data-sid]'); if (s && e.key === 'Enter') openCase(s.dataset.sid); });
+
+let searchRun = 0, lqt;
+$('#lq').onkeydown = e => { if (e.key === 'Enter') { clearTimeout(lqt); libSearch(e.target.value.trim()); } };
+$('#lq').oninput = e => { clearTimeout(lqt); const v = e.target.value.trim(); if (!v) { searchRun++; openBook(cur.col, cur.book); return; } lqt = setTimeout(() => libSearch(v), 500); };
+async function libSearch(v) {
+  if (!IX) return;
+  const run = ++searchRun, C = colOf(cur.col);
+  const digits = v.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  if (/^\d+$/.test(digits)) return openHadith(cur.col, +digits, true);
+  const q = norm(v); if (q.length < 2) return;
+  const out = []; let done = 0;
+  $('#hlist').innerHTML = `<p class="progress" id="prog">جارٍ البحث في ${C.ar}…</p><div id="res"></div>`;
+  for (const [b, t] of C.books) {
+    let rows; try { rows = await getJSON(`data/texts/${cur.col}/${b}.json`); } catch { continue; }
+    if (run !== searchRun) return;
+    for (const r of rows) if (norm(r[1]).includes(q)) { out.push([t, r]); if (out.length >= 150) break; }
+    done++; const p = $('#prog'); if (p) p.textContent = `بحثت في ${AR(done)} من ${AR(C.books.length)} كتابًا: ${AR(out.length)} نتيجة${out.length >= 150 ? ' (أول ١٥٠)' : ''}`;
+    if (out.length >= 150) break;
+  }
+  if (run !== searchRun) return;
+  $('#res').innerHTML = out.length ? out.map(([t, r]) => `<p class="note" style="margin-top:6px">${esc(t)}</p>` + hRow(cur.col, r, q)).join('') : '<p class="empty">لا نتائج. جرّب كلمة أخرى أو مصنَّفًا آخر.</p>';
+}
+async function openHadith(col, n, keepQuery) {
+  show('lib'); await initLib(); if (!IX) return;
+  const C = colOf(col); if (!C) return;
+  if (!keepQuery) $('#lq').value = '';
+  for (const [b] of C.books) {
+    let rows; try { rows = await getJSON(`data/texts/${col}/${b}.json`); } catch { continue; }
+    if (rows.some(r => r[0] === n)) return openBook(col, b, n);
+  }
+  $('#hlist').innerHTML = `<p class="empty">لا توجد رواية برقم ${AR(n)} في ${C.ar} ضمن هذه المكتبة.</p>`;
+}
+function openCase(id) {
+  show('study'); fCls = new Set('ABCDE'); fCat = 'الكل'; fQ = ''; $('#q').value = '';
+  renderDist(); renderCats(); renderCases();
+  const d = document.getElementById('s-' + id); if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); }
+}
+
+// method
+$('#clsdefs').innerHTML = Object.entries(CLS).map(([k, [t, d]]) => `<dt><i style="background:var(--c${k})"></i>${LETTER[k]}. ${t}</dt><dd>${d}</dd>`).join('');
+
+// start
+(async () => {
+  try { S = await getJSON('data/study.json'); }
+  catch { $('#cases').innerHTML = '<p class="empty">لم تُحمَّل الدراسة. أعد تحميل الصفحة.</p>'; return; }
+  renderDist(); renderCats(); renderCases();
+  const h = location.hash.slice(1);
+  if (h.startsWith('s-')) openCase(h.slice(2));
+  else if (h.startsWith('h-')) { const [, c, n] = h.split('-'); openHadith(c, +n); }
+  else show(views[h] ? h : store.get('tab', 'study'));
+})();
+</script>
+
+</body>
+</html>

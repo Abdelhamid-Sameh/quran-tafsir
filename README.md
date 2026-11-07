@@ -18,3 +18,7 @@ To read offline on a computer, download this repository and open `index.html`.
 - Tafsir: original Arabic texts via the [tafsir_api](https://github.com/spa5k/tafsir_api) dataset. The modern editors' manuscript footnotes are omitted, and commentary that the dataset repeated across verse groups is shown once per group.
 
 The texts are classical works; the license below covers this site's code only.
+
+## مُشكِل الصحيح
+
+A study of 61 contested sahih hadith (Arabic), with a library of the two Sahihs and the sahih narrations of the four Sunan: https://abdelhamid-sameh.github.io/quran-tafsir/hadith/
