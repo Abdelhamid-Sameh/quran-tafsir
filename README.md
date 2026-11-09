@@ -8,7 +8,7 @@ Read the Quran verse by verse, surah by surah, with classical commentary beside 
 
 Each verse also shows Pickthall's English translation (1930).
 
-**Open it:** https://abdelhamid-sameh.github.io/quran-tafsir/ — works in any browser, on phones too, no account needed.
+**Open it:** https://abdelhamid-sameh.github.io/quran-tafsir/ (home page linking the Quran reader, the hadith study and the 99 Names; the reader itself is at /quran/) — works in any browser, on phones too, no account needed.
 To read offline on a computer, download this repository and open `index.html`.
 
 ## Sources
