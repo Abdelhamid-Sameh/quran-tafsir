@@ -22,3 +22,7 @@ The texts are classical works; the license below covers this site's code only.
 ## مُشكِل الصحيح
 
 A study of 61 contested sahih hadith (Arabic), with a library of the two Sahihs and the sahih narrations of the four Sunan: https://abdelhamid-sameh.github.io/quran-tafsir/hadith/
+
+## الأسماء الحسنى
+
+The 99 Names of Allah (Arabic) in the order of al-Tirmidhi 3507, with a meaning for each and the Quran verses where it appears as a Name (counted from the Quranic Arabic Corpus morphology, ambiguous cases checked by hand): https://abdelhamid-sameh.github.io/quran-tafsir/asma/
